@@ -1,4 +1,5 @@
 import logging
+from typing_extensions import dataclass_transform
 
 from .exceptions import AuthorizationError, DependencyTrackApiError
 
@@ -17,7 +18,7 @@ class Bom:
         :rtype: list()
         :raises DependencyTrackApiError: if the REST call failed
         """
-        response = self.session.get(self.api + "/bom/cyclonedx/project/{uuid}", params=self.paginated_param_payload)
+        response = self.session.get(self.api + f"/bom/cyclonedx/project/{uuid}", params=self.paginated_param_payload)
         if response.status_code == 200:
             return response.json()
         else:
@@ -35,11 +36,16 @@ class Bom:
         :rtype: dist
         :raises DependencyTrackApiError: if the REST call failed
         """
-        data = open(file, 'rb')
-        response = self.session.post(self.api + f"/bom", json=data)
+        files = open(file, "rb")
+        data = {"project": uuid}
+
+        response = self.session.post(self.api + f"/bom", files={"bom": files}, data=data)
+
         if response.status_code == 200:
             return response.json()
         else:
             description = f"Error while getting dependency for component {uuid}"
             raise DependencyTrackApiError(description, response)
+
+
 

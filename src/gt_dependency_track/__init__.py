@@ -4,12 +4,13 @@ import requests
 from .projects import Projects
 from .components import Components
 from .licenses import Licenses
+from .bom import Bom
 from .exceptions import AuthenticationError, DependencyTrackApiError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-class DependencyTrack(Projects, Components, Licenses):
+class DependencyTrack(Projects, Components, Licenses, Bom):
 
     """Main DependencyTrack API class
 
